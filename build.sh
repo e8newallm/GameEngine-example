@@ -1,0 +1,1 @@
+(mkdir bin -p && cd bin && cmake .. && cmake --build . -j)
