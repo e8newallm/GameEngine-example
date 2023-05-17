@@ -1,0 +1,301 @@
+{
+    "Textures": "tex/spritemap.png",
+    "Sprites": [
+        {
+            "name": "sprite01",
+            "texture": "tex/spritemap.png",
+            "x": 0,
+            "y": 0,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite02",
+            "texture": "tex/spritemap.png",
+            "x": 150,
+            "y": 0,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite03",
+            "texture": "tex/spritemap.png",
+            "x": 300,
+            "y": 0,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite04",
+            "texture": "tex/spritemap.png",
+            "x": 450,
+            "y": 0,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite05",
+            "texture": "tex/spritemap.png",
+            "x": 600,
+            "y": 0,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite06",
+            "texture": "tex/spritemap.png",
+            "x": 750,
+            "y": 0,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite07",
+            "texture": "tex/spritemap.png",
+            "x": 900,
+            "y": 0,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite08",
+            "texture": "tex/spritemap.png",
+            "x": 1050,
+            "y": 0,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite09",
+            "texture": "tex/spritemap.png",
+            "x": 0,
+            "y": 150,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite10",
+            "texture": "tex/spritemap.png",
+            "x": 150,
+            "y": 150,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite11",
+            "texture": "tex/spritemap.png",
+            "x": 300,
+            "y": 150,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite12",
+            "texture": "tex/spritemap.png",
+            "x": 450,
+            "y": 150,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite13",
+            "texture": "tex/spritemap.png",
+            "x": 600,
+            "y": 150,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite14",
+            "texture": "tex/spritemap.png",
+            "x": 750,
+            "y": 150,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite15",
+            "texture": "tex/spritemap.png",
+            "x": 900,
+            "y": 150,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite16",
+            "texture": "tex/spritemap.png",
+            "x": 1050,
+            "y": 150,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite17",
+            "texture": "tex/spritemap.png",
+            "x": 0,
+            "y": 300,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite18",
+            "texture": "tex/spritemap.png",
+            "x": 150,
+            "y": 300,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite19",
+            "texture": "tex/spritemap.png",
+            "x": 300,
+            "y": 300,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite20",
+            "texture": "tex/spritemap.png",
+            "x": 450,
+            "y": 300,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite21",
+            "texture": "tex/spritemap.png",
+            "x": 600,
+            "y": 300,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite22",
+            "texture": "tex/spritemap.png",
+            "x": 750,
+            "y": 300,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite23",
+            "texture": "tex/spritemap.png",
+            "x": 900,
+            "y": 300,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite24",
+            "texture": "tex/spritemap.png",
+            "x": 1050,
+            "y": 300,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite25",
+            "texture": "tex/spritemap.png",
+            "x": 0,
+            "y": 450,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite26",
+            "texture": "tex/spritemap.png",
+            "x": 150,
+            "y": 450,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite27",
+            "texture": "tex/spritemap.png",
+            "x": 300,
+            "y": 450,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite28",
+            "texture": "tex/spritemap.png",
+            "x": 450,
+            "y": 450,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite29",
+            "texture": "tex/spritemap.png",
+            "x": 600,
+            "y": 450,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite30",
+            "texture": "tex/spritemap.png",
+            "x": 750,
+            "y": 450,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite31",
+            "texture": "tex/spritemap.png",
+            "x": 900,
+            "y": 450,
+            "height": 150,
+            "width": 150
+        },
+        {
+            "name": "sprite32",
+            "texture": "tex/spritemap.png",
+            "x": 1050,
+            "y": 450,
+            "height": 150,
+            "width": 150
+        }
+    ],
+    "Animations": [
+        {
+            "name": "explosion",
+            "frames": [
+                "sprite01",
+                "sprite02",
+                "sprite03",
+                "sprite04",
+                "sprite05",
+                "sprite06",
+                "sprite07",
+                "sprite08",
+                "sprite09",
+                "sprite10",
+                "sprite11",
+                "sprite12",
+                "sprite13",
+                "sprite14",
+                "sprite15",
+                "sprite16",
+                "sprite17",
+                "sprite18",
+                "sprite19",
+                "sprite20",
+                "sprite21",
+                "sprite22",
+                "sprite23",
+                "sprite24",
+                "sprite25",
+                "sprite26",
+                "sprite27",
+                "sprite28",
+                "sprite29",
+                "sprite30",
+                "sprite31",
+                "sprite32"
+            ],
+            "FPS": 25.0
+        }
+    ]
+}

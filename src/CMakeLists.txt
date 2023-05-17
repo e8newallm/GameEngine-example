@@ -1,13 +1,12 @@
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(RapidJSON REQUIRED)
 
-file(GLOB src 
+add_executable(Game main.cpp player.cpp)
+set_target_properties(Game
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/Game/"
 )
 
-file(GLOB headers
-)
-
-add_executable(Game ${src})
-target_link_libraries(Game PUBLIC ${SDL2_LIBRARIES})
-target_include_directories(Game PUBLIC . ${headers} ${SDL2_INCLUDE_DIRS} ../engine)
+target_link_libraries(Game PUBLIC ${SDL2_LIBRARIES} SDL2_image GameEngine)
+target_include_directories(Game PUBLIC ${SDL2_INCLUDE_DIRS})
+add_custom_command(TARGET Game PRE_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_CURRENT_SOURCE_DIR}/tex/ $<TARGET_FILE_DIR:Game>/tex)

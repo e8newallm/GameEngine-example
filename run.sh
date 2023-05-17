@@ -1,11 +1,15 @@
 bin=$1
+
 if [ -z $1 ]
-  then
-    bin="TheGame"
+then
+  bin="Game"
+  dir="Game"
+else
+  dir="bin"
 fi
 
 ./build.sh
 if [ $? -eq 0 ];
 then
-  (cd ./bin/bin && clear && ./$bin)
+  (cd ./bin/$dir && clear && ./$bin)
 fi
