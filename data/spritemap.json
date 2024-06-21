@@ -1,9 +1,9 @@
 {
-    "Textures": "tex/spritemap.png",
+    "Textures": "/spritemap.png",
     "Sprites": [
         {
             "name": "sprite01",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 0,
             "y": 0,
             "height": 150,
@@ -11,7 +11,7 @@
         },
         {
             "name": "sprite02",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 151,
             "y": 0,
             "height": 150,
@@ -19,7 +19,7 @@
         },
         {
             "name": "sprite03",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 302,
             "y": 0,
             "height": 150,
@@ -27,7 +27,7 @@
         },
         {
             "name": "sprite04",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 453,
             "y": 0,
             "height": 150,
@@ -35,7 +35,7 @@
         },
         {
             "name": "sprite05",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 604,
             "y": 0,
             "height": 150,
@@ -43,7 +43,7 @@
         },
         {
             "name": "sprite06",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 755,
             "y": 0,
             "height": 150,
@@ -51,7 +51,7 @@
         },
         {
             "name": "sprite07",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 906,
             "y": 0,
             "height": 150,
@@ -59,7 +59,7 @@
         },
         {
             "name": "sprite08",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 1057,
             "y": 0,
             "height": 150,
@@ -67,7 +67,7 @@
         },
         {
             "name": "sprite09",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 0,
             "y": 150,
             "height": 150,
@@ -75,7 +75,7 @@
         },
         {
             "name": "sprite10",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 151,
             "y": 150,
             "height": 150,
@@ -83,7 +83,7 @@
         },
         {
             "name": "sprite11",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 302,
             "y": 150,
             "height": 150,
@@ -91,7 +91,7 @@
         },
         {
             "name": "sprite12",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 453,
             "y": 150,
             "height": 150,
@@ -99,7 +99,7 @@
         },
         {
             "name": "sprite13",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 604,
             "y": 150,
             "height": 150,
@@ -107,7 +107,7 @@
         },
         {
             "name": "sprite14",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 755,
             "y": 150,
             "height": 150,
@@ -115,7 +115,7 @@
         },
         {
             "name": "sprite15",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 906,
             "y": 150,
             "height": 150,
@@ -123,7 +123,7 @@
         },
         {
             "name": "sprite16",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 1057,
             "y": 150,
             "height": 150,
@@ -131,7 +131,7 @@
         },
         {
             "name": "sprite17",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 0,
             "y": 300,
             "height": 150,
@@ -139,7 +139,7 @@
         },
         {
             "name": "sprite18",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 151,
             "y": 300,
             "height": 150,
@@ -147,7 +147,7 @@
         },
         {
             "name": "sprite19",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 302,
             "y": 300,
             "height": 150,
@@ -155,7 +155,7 @@
         },
         {
             "name": "sprite20",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 453,
             "y": 300,
             "height": 150,
@@ -163,7 +163,7 @@
         },
         {
             "name": "sprite21",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 604,
             "y": 300,
             "height": 150,
@@ -171,7 +171,7 @@
         },
         {
             "name": "sprite22",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 755,
             "y": 300,
             "height": 150,
@@ -179,7 +179,7 @@
         },
         {
             "name": "sprite23",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 906,
             "y": 300,
             "height": 150,
@@ -187,7 +187,7 @@
         },
         {
             "name": "sprite24",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 1057,
             "y": 300,
             "height": 150,
@@ -195,7 +195,7 @@
         },
         {
             "name": "sprite25",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 0,
             "y": 450,
             "height": 150,
@@ -203,7 +203,7 @@
         },
         {
             "name": "sprite26",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 151,
             "y": 450,
             "height": 150,
@@ -211,7 +211,7 @@
         },
         {
             "name": "sprite27",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 302,
             "y": 450,
             "height": 150,
@@ -219,7 +219,7 @@
         },
         {
             "name": "sprite28",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 453,
             "y": 450,
             "height": 150,
@@ -227,7 +227,7 @@
         },
         {
             "name": "sprite29",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 604,
             "y": 450,
             "height": 150,
@@ -235,7 +235,7 @@
         },
         {
             "name": "sprite30",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 755,
             "y": 450,
             "height": 150,
@@ -243,7 +243,7 @@
         },
         {
             "name": "sprite31",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 906,
             "y": 450,
             "height": 150,
@@ -251,7 +251,7 @@
         },
         {
             "name": "sprite32",
-            "texture": "tex/spritemap.png",
+            "texture": "/spritemap.png",
             "x": 1057,
             "y": 450,
             "height": 150,

@@ -37,7 +37,6 @@ int main()
     MouseState& mouseState = MouseState::get();
 
     PackageManager dataPackage("data.bin");
-    for(std::string file : dataPackage.getFileList())  std::cout << file << "\r\n";
     View viewport( {1000, 1000}, {0, 0});
     viewport.setZoom(1.0);
 
@@ -47,7 +46,7 @@ int main()
     state.addImage(new Image({0, 0, 1000, 1000}, new Texture(rend, dataPackage.getFile("/background.png")), UINT8_MAX));
     phyContext->addPhyObj(new PhysicsObject({0, 960, 1000, 40}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture(rend, dataPackage.getFile("/Tile.png"))));
 
-    phyContext->addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(rend, "tex/spritemap.json")));
+    phyContext->addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(rend, &dataPackage, "/spritemap.json")));
     state.startPhysics();
 
     while (!close)
