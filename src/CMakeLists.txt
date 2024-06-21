@@ -6,7 +6,10 @@ set_target_properties(Game
 )
 
 target_link_libraries(Game PUBLIC ${SDL2_LIBRARIES} SDL2_image GameEngine)
-target_include_directories(Game PUBLIC ${SDL2_INCLUDE_DIRS})
-add_custom_command(TARGET Game PRE_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                       ${CMAKE_CURRENT_SOURCE_DIR}/tex/ $<TARGET_FILE_DIR:Game>/tex)
+target_include_directories(Game PUBLIC ${SDL2_INCLUDE_DIRS} GameEngine)
+
+  add_custom_target(DataPackager
+  ALL
+  COMMAND PackagerBin ${CMAKE_SOURCE_DIR}/data $<TARGET_FILE_DIR:Game>/data.bin
+  DEPENDS Packager PackagerBin
+)
