@@ -11,5 +11,5 @@ fi
 ./build.sh
 if [ $? -eq 0 ];
 then
-  (cd ./bin/$dir && clear && ./$bin)
+  (cd ./bin/$dir && clear && ./$bin ${@:2})
 fi

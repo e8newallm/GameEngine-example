@@ -8,21 +8,20 @@
 #include "physicsobject.h"
 #include "image.h"
 #include "context.h"
-
 #include "texture.h"
 #include "spritemap.h"
-
 #include "mousestate.h"
 #include "keystate.h"
-
 #include "player.h"
 
 #include "tools/packager/packager.h"
+#include "logging.h"
 
 bool close = false;
 
 int main()
 {
+    Logger::message("TEST MESSAGE");
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
         printf("error initializing SDL: %s\n", SDL_GetError());
