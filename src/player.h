@@ -7,7 +7,7 @@
 class Player : public PhysicsObject
 {
     public:
-        Player(SDL_Rect body, int flags, Texture* texture) :
+        Player(SDL_Rect body, int flags, Texture_base* texture) :
         PhysicsObject(body, flags, texture)
         {((SpriteMap*)texture)->setSprite("sprite01");};
 
