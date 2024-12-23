@@ -5,18 +5,28 @@
 #include "spritemap.h"
 #include "world.h"
 
+Player::Player(SDL_Rect body, int flags, std::string spriteMap)
+{
+    Player(body, flags, new SpriteMap(SpriteMap::get(spriteMap)));
+};
+
+Player::Player(SDL_Rect body, int flags, SpriteMap* spriteMap) :
+PhysicsObject(body, flags, spriteMap)
+{
+    getTexture()->setSprite("sprite01");
+};
+
 void Player::update(double deltaTime, World& world)
 {
     if(onGround() && KeyState::key(SDL_SCANCODE_SPACE) == SDL_KEYDOWN)
     {
         SDL_FPoint curVel = getVelocity();
         velocity(curVel.x, -jump);
-        //((SpriteMap*)tex)->startAnimation("explosion");
     }
-    
-    if(!((SpriteMap*)tex)->animationRunning())
+
+    if(!getTexture()->animationRunning())
     {
-        ((SpriteMap*)tex)->startAnimation("explosion");
+        getTexture()->startAnimation("explosion");
     }
     
     SDL_FPoint vel = getVelocity();
