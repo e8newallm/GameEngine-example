@@ -1,0 +1,157 @@
+{
+   <SDL_init>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:SDL_InitSubSystem_REAL.part.0
+}
+
+{
+   <SDL_AudioInit_REAL>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:SDL_AudioInit_REAL
+}
+
+{
+   <SDL_VideoInit_REAL>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:SDL_VideoInit_REAL
+}
+
+{
+   <dlopen_doit>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dlopen_doit
+}
+
+{
+   <pa_mainloop_run>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:pa_mainloop_dispatch
+}
+
+{
+   <_dl_catch_exception>
+   Memcheck:Leak
+   match-leak-kinds: all
+   ...
+   fun:_dl_catch_exception
+}
+
+{
+   <_dl_catch_exception_realloc>
+   Memcheck:ReallocZero
+   ...
+   fun:_dl_catch_exception
+}
+
+{
+   <_dl_catch_exception_badsize>
+   Memcheck:BadSize
+   ...
+   fun:_dl_catch_exception
+}
+
+{
+   <libGLX_nvidia>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:/usr/lib/libGLX_nvidia.so.565.77
+}
+
+{
+   <libnvidia-glcore>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:/usr/lib/libnvidia-glcore.so.565.77
+}
+
+{
+   <pa_xmalloc0>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:pa_xmalloc0
+}
+
+{
+   <pa_xmalloc>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:pa_xmalloc
+}
+
+{
+   <X11_InitKeyboard>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:X11_InitKeyboard
+}
+
+{
+   <dbus_connection_send_with_reply_and_block>
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   ...
+   fun:dbus_connection_send_with_reply_and_block
+}
+
+{
+   <XSetLocaleModifiers>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:XSetLocaleModifiers
+}
+
+{
+   <dbus_bus_register>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:dbus_bus_register
+}
+
+{
+   <dbus_connection_send_with_reply_and_block>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_connection_send_with_reply_and_block
+}
+
+{
+   <SDL_DBus_CallVoidMethod>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:SDL_DBus_CallVoidMethod
+}
+
+{
+   <SDL_DBus_CallMethod>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:SDL_DBus_CallMethod
+}
+
+{
+   <_dbus_connection_open_internal>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_dbus_connection_open_internal
+}

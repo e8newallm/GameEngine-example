@@ -7,7 +7,7 @@
 
 #include "physicsobject.h"
 #include "image.h"
-#include "context.h"
+#include "world.h"
 #include "texture.h"
 #include "spritemap.h"
 #include "mousestate.h"
@@ -32,16 +32,12 @@ int game()
                                        1000, 1000, 0);
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
     SDL_Renderer* rend = SDL_CreateRenderer(win, -1, render_flags);
-    KeyState& keyState = KeyState::get();
-    MouseState& mouseState = MouseState::get();
 
     PackageManager dataPackage("data.bin");
     View viewport( {1000, 1000}, {0, 0});
     viewport.setZoom(1.0);
 
-    Context state(rend, &viewport);
-
-    PhysicsContext* phyContext = state.getPhysicsContext();
+    World world(rend, &viewport);
 
     for(std::string filename : dataPackage.getFileList())
     {
@@ -49,20 +45,22 @@ int game()
         {
             std::vector<uint8_t> data = dataPackage.getFile(filename);
             SDL_RWops* dataBuffer = SDL_RWFromMem(data.data(), data.size());
-            SDL_Texture* tex = SDL_CreateTextureFromSurface(rend, IMG_Load_RW(dataBuffer, 1));
-            Texture::add(tex, filename);
+            SDL_Surface* surf = IMG_Load_RW(dataBuffer, 1);
+            Texture::add(SDL_CreateTextureFromSurface(rend, surf), filename);
+            SDL_FreeSurface(surf);
         }
     }
 
-    state.addImage(new Image({0, 0, 1000, 1000}, new Texture("/background.png"), UINT8_MAX));
-    phyContext->addPhyObj(new PhysicsObject({0, 960, 1000, 40}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
+    world.addImage(new Image({0, 0, 1000, 1000}, "/background.png", UINT8_MAX));
+    world.addPhyObj(new PhysicsObject({0, 960, 1000, 40}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
 
-    phyContext->addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(rend, &dataPackage, "/spritemap.json")));
-    state.startPhysics();
+    world.addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(rend, &dataPackage, "/spritemap.json")));
+    world.startPhysics();
 
     while (!gameClosing)
     {
-        mouseState.reset();
+        MouseState::update();
+        KeyState::update();
 
         SDL_Event event;
         while (SDL_PollEvent(&event))
@@ -74,57 +72,35 @@ int game()
                     gameClosing = true;
                     break;
                 }
-                case SDL_KEYDOWN:
-                case SDL_KEYUP:
-                {
-                    keyState.update(event.key.keysym.scancode, event.type);
-                    break;
-                }
-                case SDL_MOUSEBUTTONDOWN:
-                case SDL_MOUSEBUTTONUP:
-                {
-                    mouseState.updateButton(event.button);
-                    break;
-                }
-                case SDL_MOUSEMOTION:
-                {
-                    mouseState.updateMove(event.motion);
-                    break;
-                }
-                case SDL_MOUSEWHEEL:
-                {
-                    mouseState.updateWheel(event.wheel);
-                    break;
-                }
                 default:
                 {
-                       
+
                 }
             }
         }
 
-        if(mouseState.scrollDelta() != 0)
+        if(MouseState::scrollDelta() != 0)
         {
-            viewport.setZoom(std::max(std::min(viewport.getZoom() + 0.05 * (float)mouseState.scrollDelta(), 2.0), 0.1));
+            viewport.setZoom(std::max(std::min(viewport.getZoom() + 0.05 * (float)MouseState::scrollDelta(), 2.0), 0.1));
         }
-        if(mouseState.buttonDown(SDL_BUTTON_RIGHT))
+        if(MouseState::buttonDown(SDL_BUTTON_RIGHT))
         {
             SDL_Point newPosition = viewport.getPosition();
-            SDL_Point delta = mouseState.mouseDelta();
+            SDL_Point delta = MouseState::mouseDelta();
             newPosition.y -= delta.y / viewport.getZoom();
             newPosition.x += delta.x / viewport.getZoom();
             viewport.setPosition(newPosition);
         }
-        
+
         SDL_RenderClear(rend);
-        state.draw();
+        world.draw();
         SDL_RenderPresent(rend);
-        //SDL_Delay(10);
     }
-    state.stopPhysics();
+
+    world.stopPhysics();
     SDL_DestroyRenderer(rend);
     SDL_DestroyWindow(win);
     SDL_Quit();
- 
+
     return 0;
 }

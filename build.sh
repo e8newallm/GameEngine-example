@@ -2,7 +2,8 @@
 
 FLAGS="-DDEBUG=OFF -DCMAKE_BUILD_TYPE=Release"
 RUN=false
-
+TEST=false
+VALGRIND=false
 while [[ $# -gt 0 ]]; do
   case $1 in
     -d|--debug)
@@ -11,6 +12,14 @@ while [[ $# -gt 0 ]]; do
       ;;
     -r|--run)
       RUN=true
+      shift # past argument
+      ;;
+    -t|--test)
+      TEST=true
+      shift # past argument
+      ;;
+    -v|--valgrind)
+      VALGRIND=true
       shift # past argument
       ;;
     -*|--*)
@@ -27,7 +36,20 @@ done
 (mkdir bin -p && cd bin && cmake .. $FLAGS && cmake --build . -j)
 
 if [ $? -eq 0 ]; then
-  if $RUN; then
-      ./run.sh
+  if $TEST; then
+      ./test.sh
+  fi
+
+  if [ $? -eq 0 ]; then
+    if $RUN; then
+        ./run.sh
+    fi
+
+    if [ $? -eq 0 ]; then
+    if $VALGRIND; then
+        (cd ./bin/Game && valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --suppressions=../../valgrind.supp --error-limit=no --track-origins=yes --log-file=../../valgrind.log -s ./Game)
+    fi
+  fi
   fi
 fi
+
