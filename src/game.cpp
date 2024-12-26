@@ -6,6 +6,7 @@
 #include <SDL_events.h>
 #include <ctime>
 
+#include "view.h"
 #include "window.h"
 #include "physicsobject.h"
 #include "image.h"
@@ -31,10 +32,9 @@ int game()
     Window mainWindow("GAME", 1000, 1000, 0);
 
     PackageManager dataPackage("data.bin");
-    View viewport( {1000, 1000}, {0, 0});
-    viewport.setZoom(1.0);
 
-    World world(mainWindow.getRend(), &viewport);
+
+    World world(mainWindow.getRend(), View({1000, 1000}, {0, 0}));
 
     for(std::string filename : dataPackage.getFileList())
     {
@@ -81,15 +81,15 @@ int game()
 
         if(MouseState::scrollDelta() != 0)
         {
-            viewport.setZoom(std::max(std::min(viewport.getZoom() + 0.05 * (float)MouseState::scrollDelta(), 2.0), 0.1));
+            world.getViewpoint().setZoom(std::max(std::min(world.getViewpoint().getZoom() + 0.05 * (float)MouseState::scrollDelta(), 2.0), 0.1));
         }
         if(MouseState::buttonDown(SDL_BUTTON_RIGHT))
         {
-            SDL_Point newPosition = viewport.getPosition();
+            SDL_Point newPosition = world.getViewpoint().getPosition();
             SDL_Point delta = MouseState::mouseDelta();
-            newPosition.y -= delta.y / viewport.getZoom();
-            newPosition.x += delta.x / viewport.getZoom();
-            viewport.setPosition(newPosition);
+            newPosition.y -= delta.y / world.getViewpoint().getZoom();
+            newPosition.x += delta.x / world.getViewpoint().getZoom();
+            world.getViewpoint().setPosition(newPosition);
         }
         mainWindow.render(world);
     }
