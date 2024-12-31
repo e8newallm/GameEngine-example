@@ -48,7 +48,7 @@ int game()
         }
     }
 
-    world.addImage(new Image({0, 0, 1000, 1000}, "/background.png", UINT8_MAX));
+    world.addImage(new Image({0, 0, 1000, 1000}, "/background.png"));
     world.addPhyObj(new PhysicsObject({0, 960, 1000, 40}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
 
     world.addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(mainWindow.getRend(), &dataPackage, "/spritemap.json")));

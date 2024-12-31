@@ -10,9 +10,7 @@ class Player : public PhysicsObject
         Player(SDL_Rect body, int flags, std::string spriteMap);
         Player(SDL_Rect body, int flags, SpriteMap* spriteMap);
 
-        void draw(SDL_Renderer* rend, double percent, View viewport);
         virtual void update(double deltaTime, World& world) override;
-
 
     private:
         inline SpriteMap* getTexture() { return static_cast<SpriteMap*>(tex); };
