@@ -4,6 +4,7 @@ FLAGS="-DDEBUG=OFF -DCMAKE_BUILD_TYPE=Release"
 RUN=false
 TEST=false
 VALGRIND=false
+CPPCHECK=false
 while [[ $# -gt 0 ]]; do
   case $1 in
     -d|--debug)
@@ -20,6 +21,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     -v|--valgrind)
       VALGRIND=true
+      shift # past argument
+      ;;
+    -c|--cppcheck)
+      CPPCHECK=true
       shift # past argument
       ;;
     -*|--*)
@@ -47,9 +52,8 @@ if [ $? -eq 0 ]; then
 
     if [ $? -eq 0 ]; then
     if $VALGRIND; then
-        (cd ./bin/Game && valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --suppressions=../../valgrind.supp --error-limit=no --track-origins=yes --log-file=../../valgrind.log -s ./Game)
+        (cd ./bin/Game && valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --suppressions=../../valgrind.supp --error-limit=no --track-origins=yes --log-file=../../valgrind.log -s --gen-suppressions=all ./Game)
     fi
   fi
   fi
 fi
-

@@ -18,7 +18,7 @@ PhysicsObject(body, flags, spriteMap)
 
 void Player::update(double deltaTime, World& world)
 {
-    if(onGround() && KeyState::key(SDL_SCANCODE_SPACE) == SDL_KEYDOWN)
+    if(onGround(world) && KeyState::key(SDL_SCANCODE_SPACE) == SDL_EVENT_KEY_DOWN)
     {
         SDL_FPoint curVel = getVelocity();
         velocity(curVel.x, -jump);
@@ -30,11 +30,11 @@ void Player::update(double deltaTime, World& world)
     }
     
     SDL_FPoint vel = getVelocity();
-    if(KeyState::key(SDL_SCANCODE_A) == SDL_KEYDOWN)
+    if(KeyState::key(SDL_SCANCODE_A) == SDL_EVENT_KEY_DOWN)
     {
         velocity(std::min(vel.x, -speed), vel.y);
     }
-    else if(KeyState::key(SDL_SCANCODE_D) == SDL_KEYDOWN)
+    else if(KeyState::key(SDL_SCANCODE_D) == SDL_EVENT_KEY_DOWN)
     {
         velocity(std::max(vel.x, speed), vel.y);
     }

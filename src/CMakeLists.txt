@@ -1,4 +1,3 @@
-
 file(GLOB gamesrc
     main.cpp
     game.cpp
@@ -16,7 +15,7 @@ if(DEBUG)
 endif()
 
 
-target_link_libraries(Game PUBLIC ${SDL2_LIBRARIES} SDL2_image GameEngine)
-target_include_directories(Game PUBLIC ${SDL2_INCLUDE_DIRS} GameEngine)
+target_link_libraries(Game PUBLIC ${SDL3_LIBRARIES} SDL3_image GameEngine)
+target_include_directories(Game PUBLIC ${SDL3_INCLUDE_DIRS} GameEngine)
 
 package_gen(${CMAKE_SOURCE_DIR}/data "${CMAKE_BINARY_DIR}/Game/data.bin")

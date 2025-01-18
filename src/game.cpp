@@ -1,9 +1,6 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_timer.h>
-#include <SDL2/SDL_thread.h>
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 
-#include <SDL_events.h>
 #include <ctime>
 
 #include "view.h"
@@ -16,23 +13,23 @@
 #include "mousestate.h"
 #include "keystate.h"
 #include "player.h"
+#include "gamestate.h"
 
 #include "tools/packager/packager.h"
 #include "logging.h"
 
-extern bool gameClosing;
+extern double FPS, PPS;
 
 int game()
 {
     Logger::message("TEST MESSAGE");
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
     {
         printf("error initializing SDL: %s\n", SDL_GetError());
     }
     Window mainWindow("GAME", 1000, 1000, 0);
 
     PackageManager dataPackage("data.bin");
-
 
     World world(mainWindow.getRend(), View({1000, 1000}, {0, 0}));
 
@@ -41,10 +38,10 @@ int game()
         if(getExtension(filename) == "png")
         {
             std::vector<uint8_t> data = dataPackage.getFile(filename);
-            SDL_RWops* dataBuffer = SDL_RWFromMem(data.data(), data.size());
-            SDL_Surface* surf = IMG_Load_RW(dataBuffer, 1);
+            SDL_IOStream* dataBuffer = SDL_IOFromMem(data.data(), data.size());
+            SDL_Surface* surf = IMG_Load_IO(dataBuffer, 1);
             Texture::add(SDL_CreateTextureFromSurface(mainWindow.getRend(), surf), filename);
-            SDL_FreeSurface(surf);
+            SDL_DestroySurface(surf);
         }
     }
 
@@ -54,22 +51,22 @@ int game()
     world.addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(mainWindow.getRend(), &dataPackage, "/spritemap.json")));
     world.startPhysics();
 
-    while (!gameClosing)
+    while (!GameState::gameClosing())
     {
         MouseState::update();
         KeyState::update();
 
-        if(KeyState::key(SDL_SCANCODE_Q) == SDL_KEYDOWN)
-            gameClosing = true;
+        if(KeyState::key(SDL_SCANCODE_Q) == SDL_EVENT_KEY_DOWN)
+            GameState::closeGame();
 
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
             {
-                case SDL_QUIT:
+                case SDL_EVENT_QUIT:
                 {
-                    gameClosing = true;
+                    GameState::closeGame();
                     break;
                 }
                 default:
@@ -81,17 +78,16 @@ int game()
 
         if(MouseState::scrollDelta() != 0)
         {
-            world.getViewpoint().setZoom(std::max(std::min(world.getViewpoint().getZoom() + 0.05 * (float)MouseState::scrollDelta(), 2.0), 0.1));
+            world.getView().setZoom(std::max(std::min(world.getView().getZoom() + 0.05 * (float)MouseState::scrollDelta(), 2.0), 0.1));
         }
         if(MouseState::buttonDown(SDL_BUTTON_RIGHT))
         {
-            SDL_Point newPosition = world.getViewpoint().getPosition();
-            SDL_Point delta = MouseState::mouseDelta();
-            newPosition.y -= delta.y / world.getViewpoint().getZoom();
-            newPosition.x += delta.x / world.getViewpoint().getZoom();
-            world.getViewpoint().setPosition(newPosition);
+            world.getView().moveDelta(MouseState::mouseDelta());
         }
         mainWindow.render(world);
+        world.runPhysics();
+        SDL_Delay(1);
+        std::cout << "FPS: " << FPS << "\tPPS:" << PPS << "\r";
     }
 
     world.stopPhysics();

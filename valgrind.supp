@@ -155,3 +155,19 @@
    ...
    fun:_dbus_connection_open_internal
 }
+
+{
+   <SDL_DestroyRenderer_REAL>
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   ...
+   fun:SDL_DestroyRenderer_REAL
+}
+
+{
+   <SDL_DestroyRenderer_REAL>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:SDL_DestroyRenderer_REAL
+}
