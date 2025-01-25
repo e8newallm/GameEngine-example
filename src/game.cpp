@@ -1,5 +1,6 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_gpu.h>
+#include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3_image/SDL_image.h>
 
@@ -31,19 +32,23 @@ SDL_GPUBuffer* indexBuffer;
 SDL_GPUShader* vertexShader;
 SDL_GPUShader* fragmentShader;
 
-const struct
+struct vertDat
 {
-    float vertices[4][4] = {
-        {-1.0f, 1.0f, 0.0f, 0.0f},
-        {1.0f, 1.0f, 4.0f, 0.0f},
-        {1.0f, -1.0f, 4.0f, 4.0f},
-        {-1.0f, -1.0f, 0.0f, 4.0f}
-    };
+    float vertices[4][4];
+    Uint16 indexData[6];
+};
 
-    Uint16 indexData[6] = {
+struct vertDat verticesData = {
+	{
+        {-0.5f, 0.5f, 0.0f, 0.0f},
+        {0.5f, 0.5f, 1.0f, 0.0f},
+        {0.5f, -0.5f, 1.0f, 1.0f},
+        {-0.5f, -0.5f, 0.0f, 1.0f}
+    },
+	{
         0, 1, 2, 0, 2, 3
-    };
-} verticesData;
+    }
+};
 
 SDL_GPUShader* LoadShader(
 	SDL_GPUDevice* device,
@@ -156,7 +161,7 @@ int game()
 
 	SDL_GPUVertexBufferDescription vertexBufferDescription[] {{
 				.slot = 0,
-				.pitch = sizeof(verticesData.vertices),
+				.pitch = sizeof(float) * 4,
 				.input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX,
 				.instance_step_rate = 0,
 			}};
@@ -231,7 +236,7 @@ int game()
     SDL_GPUBufferCreateInfo gpuIndexInfo;
     SDL_zero(gpuIndexInfo);
     gpuIndexInfo.usage = SDL_GPU_BUFFERUSAGE_INDEX;
-    gpuIndexInfo.size = sizeof(Uint16);
+    gpuIndexInfo.size = sizeof(Uint16) * 6;
 	indexBuffer = SDL_CreateGPUBuffer(mainWindow.getGPU(), &gpuIndexInfo);
 
     SDL_GPUTransferBufferCreateInfo bufferInfo;
@@ -247,6 +252,7 @@ int game()
 	);
 
     SDL_memcpy(transferData, &verticesData, sizeof(verticesData));
+
     SDL_UnmapGPUTransferBuffer(mainWindow.getGPU(), bufferTransferBuffer);
 
     SDL_GPUTransferBufferLocation transBuffer;
@@ -300,14 +306,20 @@ int game()
 
     while (!GameState::gameClosing())
     {
+        MouseState::update();
+        KeyState::update();
+
+        if(KeyState::key(SDL_SCANCODE_Q) == SDL_EVENT_KEY_DOWN)
+            GameState::closeGame();
+
         ////////////////////////////////
         SDL_GPUCommandBuffer* cmdbuf = SDL_AcquireGPUCommandBuffer(mainWindow.getGPU());
         SDL_GPUTexture* swapchainTexture;
-         if (!SDL_WaitAndAcquireGPUSwapchainTexture(cmdbuf, mainWindow.getWin(), &swapchainTexture, NULL, NULL))
-		 {
-			SDL_Log("WaitAndAcquireGPUSwapchainTexture failed: %s", SDL_GetError());
-        	return -1;
-		 }
+		if (!SDL_WaitAndAcquireGPUSwapchainTexture(cmdbuf, mainWindow.getWin(), &swapchainTexture, NULL, NULL))
+		{
+		SDL_Log("WaitAndAcquireGPUSwapchainTexture failed: %s", SDL_GetError());
+		return -1;
+		}
 
 		if (swapchainTexture != NULL)
 		{
@@ -319,16 +331,11 @@ int game()
 			colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
 
 			SDL_GPURenderPass* renderPass = SDL_BeginGPURenderPass(cmdbuf, &colorTargetInfo, 1, NULL);
-			Logger::message("DRAWING");
 			SDL_BindGPUGraphicsPipeline(renderPass, Pipeline);
 			SDL_BindGPUVertexBuffers(renderPass, 0, &(SDL_GPUBufferBinding){ .buffer = vertexBuffer, .offset = 0 }, 1);
 			SDL_BindGPUIndexBuffer(renderPass, &(SDL_GPUBufferBinding){ .buffer = indexBuffer, .offset = 0 }, SDL_GPU_INDEXELEMENTSIZE_16BIT);
-			Logger::message("MID");
 			SDL_BindGPUFragmentSamplers(renderPass, 0, &(SDL_GPUTextureSamplerBinding){ .texture = Texture::get("/background.png"), .sampler = sample }, 1);
-			Logger::message("MID2");
 			SDL_DrawGPUIndexedPrimitives(renderPass, 6, 1, 0, 0, 0);
-
-			Logger::message("DRAW");
 
 			SDL_EndGPURenderPass(renderPass);
 		}
@@ -337,7 +344,7 @@ int game()
 
         ////////////////////////////////
 
-        //SDL_Delay(1);
+        SDL_Delay(1);
         //std::cout << "FPS: " << FPS << "\tPPS:" << PPS << "\r";
     }
 
