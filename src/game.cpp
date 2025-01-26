@@ -155,9 +155,24 @@ int game()
 		return -1;
 	}
 
-	SDL_GPUColorTargetDescription colorTargetDescription[]{{
-				.format = SDL_GetGPUSwapchainTextureFormat(mainWindow.getGPU(), mainWindow.getWin())
-			}};
+	SDL_GPUColorTargetBlendState colorBlend {
+		.src_color_blendfactor = SDL_GPU_BLENDFACTOR_SRC_ALPHA,
+		.dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
+		.color_blend_op = SDL_GPU_BLENDOP_ADD,
+
+		.src_alpha_blendfactor = SDL_GPU_BLENDFACTOR_SRC_ALPHA,
+		.dst_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
+		.alpha_blend_op = SDL_GPU_BLENDOP_ADD,
+		.enable_blend = true,
+	};
+
+	SDL_GPUColorTargetDescription colorTargetDescription[]
+	{
+	{
+			.format = SDL_GetGPUSwapchainTextureFormat(mainWindow.getGPU(), mainWindow.getWin()),
+			.blend_state = colorBlend,
+		}
+	};
 
 	SDL_GPUVertexBufferDescription vertexBufferDescription[] {{
 				.slot = 0,
@@ -212,12 +227,14 @@ int game()
     //CREATE SAMPLE
     SDL_GPUSamplerCreateInfo gpuSampleInfo;
     SDL_zero(gpuSampleInfo);
-    gpuSampleInfo.min_filter = SDL_GPU_FILTER_NEAREST;
-    gpuSampleInfo.mag_filter = SDL_GPU_FILTER_NEAREST;
-    gpuSampleInfo.mipmap_mode = SDL_GPU_SAMPLERMIPMAPMODE_NEAREST;
-    gpuSampleInfo.address_mode_u = SDL_GPU_SAMPLERADDRESSMODE_REPEAT;
-    gpuSampleInfo.address_mode_v = SDL_GPU_SAMPLERADDRESSMODE_REPEAT;
-    gpuSampleInfo.address_mode_w = SDL_GPU_SAMPLERADDRESSMODE_REPEAT;
+		gpuSampleInfo.min_filter = SDL_GPU_FILTER_LINEAR;
+		gpuSampleInfo.mag_filter = SDL_GPU_FILTER_LINEAR;
+		gpuSampleInfo.mipmap_mode = SDL_GPU_SAMPLERMIPMAPMODE_LINEAR;
+		gpuSampleInfo.address_mode_u = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;
+		gpuSampleInfo.address_mode_v = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;
+		gpuSampleInfo.address_mode_w = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;
+		gpuSampleInfo.enable_anisotropy = true;
+		gpuSampleInfo.max_anisotropy = 4;
     sample = SDL_CreateGPUSampler(mainWindow.getGPU(), &gpuSampleInfo);
 
 
@@ -334,7 +351,7 @@ int game()
 			SDL_BindGPUGraphicsPipeline(renderPass, Pipeline);
 			SDL_BindGPUVertexBuffers(renderPass, 0, &(SDL_GPUBufferBinding){ .buffer = vertexBuffer, .offset = 0 }, 1);
 			SDL_BindGPUIndexBuffer(renderPass, &(SDL_GPUBufferBinding){ .buffer = indexBuffer, .offset = 0 }, SDL_GPU_INDEXELEMENTSIZE_16BIT);
-			SDL_BindGPUFragmentSamplers(renderPass, 0, &(SDL_GPUTextureSamplerBinding){ .texture = Texture::get("/background.png"), .sampler = sample }, 1);
+			SDL_BindGPUFragmentSamplers(renderPass, 0, &(SDL_GPUTextureSamplerBinding){ .texture = Texture::get("/spritemap.png"), .sampler = sample }, 1);
 			SDL_DrawGPUIndexedPrimitives(renderPass, 6, 1, 0, 0, 0);
 
 			SDL_EndGPURenderPass(renderPass);
