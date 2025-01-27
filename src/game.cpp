@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_pixels.h>
+#include <SDL3/SDL_render.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3_image/SDL_image.h>
 
@@ -31,24 +32,6 @@ SDL_GPUBuffer* vertexBuffer;
 SDL_GPUBuffer* indexBuffer;
 SDL_GPUShader* vertexShader;
 SDL_GPUShader* fragmentShader;
-
-struct vertDat
-{
-    float vertices[4][4];
-    Uint16 indexData[6];
-};
-
-struct vertDat verticesData = {
-	{
-        {-0.5f, 0.5f, 0.0f, 0.0f},
-        {0.5f, 0.5f, 1.0f, 0.0f},
-        {0.5f, -0.5f, 1.0f, 1.0f},
-        {-0.5f, -0.5f, 0.0f, 1.0f}
-    },
-	{
-        0, 1, 2, 0, 2, 3
-    }
-};
 
 SDL_GPUShader* LoadShader(
 	SDL_GPUDevice* device,
@@ -126,6 +109,13 @@ SDL_GPUShader* LoadShader(
 	SDL_free(code);
 	return shader;
 }
+
+struct ShaderData
+{
+	SDL_Rect camera;
+	SDL_Point resolution;
+};
+
 ////////////////////////////////
 
 int game()
@@ -141,7 +131,7 @@ int game()
 
     ////////////////////////////////
 	// Create the shaders
-	SDL_GPUShader* vertexShader = LoadShader(mainWindow.getGPU(), "shader.vert", 0, 0, 0, 0);
+	SDL_GPUShader* vertexShader = LoadShader(mainWindow.getGPU(), "shader.vert", 0, 1, 0, 0);
 	if (vertexShader == NULL)
 	{
 		SDL_Log("Failed to create vertex shader!");
@@ -174,38 +164,11 @@ int game()
 		}
 	};
 
-	SDL_GPUVertexBufferDescription vertexBufferDescription[] {{
-				.slot = 0,
-				.pitch = sizeof(float) * 4,
-				.input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX,
-				.instance_step_rate = 0,
-			}};
-
-	SDL_GPUVertexAttribute vertexAttribute[] {{
-				.location = 0,
-				.buffer_slot = 0,
-				.format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2,
-				.offset = 0
-			}, {
-				.location = 1,
-				.buffer_slot = 0,
-				.format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2,
-				.offset = sizeof(float) * 2
-			}};
-
-	SDL_GPUVertexInputState vertexInputState {
-			.vertex_buffer_descriptions = vertexBufferDescription,
-			.num_vertex_buffers = 1,
-			.vertex_attributes = vertexAttribute,
-			.num_vertex_attributes = 2,
-		};
-
 	// Create the pipeline
 	SDL_GPUGraphicsPipelineCreateInfo pipelineCreateInfo = {
 		.vertex_shader = vertexShader,
 		.fragment_shader = fragmentShader,
 
-		.vertex_input_state = vertexInputState,
 		.primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST,
 
 		.target_info = {
@@ -237,63 +200,8 @@ int game()
 		gpuSampleInfo.max_anisotropy = 4;
     sample = SDL_CreateGPUSampler(mainWindow.getGPU(), &gpuSampleInfo);
 
-
-    //CREATE VERTEX/INDEX BUFFERS
-    SDL_GPUBufferCreateInfo gpuVertexInfo;
-    SDL_zero(gpuVertexInfo);
-    gpuVertexInfo.usage = SDL_GPU_BUFFERUSAGE_VERTEX;
-    gpuVertexInfo.size = sizeof(verticesData.vertices);
-    vertexBuffer = SDL_CreateGPUBuffer(mainWindow.getGPU(), &gpuVertexInfo);
-
-	SDL_SetGPUBufferName(mainWindow.getGPU(),
-		vertexBuffer,
-		"Object vertex"
-	);
-
-    SDL_GPUBufferCreateInfo gpuIndexInfo;
-    SDL_zero(gpuIndexInfo);
-    gpuIndexInfo.usage = SDL_GPU_BUFFERUSAGE_INDEX;
-    gpuIndexInfo.size = sizeof(Uint16) * 6;
-	indexBuffer = SDL_CreateGPUBuffer(mainWindow.getGPU(), &gpuIndexInfo);
-
-    SDL_GPUTransferBufferCreateInfo bufferInfo;
-    SDL_zero(bufferInfo);
-    bufferInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
-    bufferInfo.size = sizeof(verticesData);
-	SDL_GPUTransferBuffer* bufferTransferBuffer = SDL_CreateGPUTransferBuffer(mainWindow.getGPU(), &bufferInfo);
-
-	void* transferData = SDL_MapGPUTransferBuffer(
-		mainWindow.getGPU(),
-		bufferTransferBuffer,
-		false
-	);
-
-    SDL_memcpy(transferData, &verticesData, sizeof(verticesData));
-
-    SDL_UnmapGPUTransferBuffer(mainWindow.getGPU(), bufferTransferBuffer);
-
-    SDL_GPUTransferBufferLocation transBuffer;
-    SDL_zero(transBuffer);
-    transBuffer.transfer_buffer = bufferTransferBuffer;
-    transBuffer.offset = 0;
-
-    SDL_GPUBufferRegion buffRegion;
-    SDL_zero(buffRegion);
-    buffRegion.buffer = vertexBuffer;
-    buffRegion.offset = 0;
-    buffRegion.size = sizeof(verticesData.vertices);
-
-    SDL_UploadToGPUBuffer(copyPass, &transBuffer, &buffRegion, false);
-
-    transBuffer.offset = sizeof(verticesData.vertices);
-    buffRegion.buffer = indexBuffer;
-    buffRegion.size = sizeof(verticesData.indexData);
-
-    SDL_UploadToGPUBuffer(copyPass, &transBuffer, &buffRegion, false);
-
     SDL_EndGPUCopyPass(copyPass);
 	SDL_SubmitGPUCommandBuffer(uploadCmdBuf);
-    SDL_ReleaseGPUTransferBuffer(mainWindow.getGPU(), bufferTransferBuffer);
     ////////////////////////////////
 
 
@@ -313,7 +221,7 @@ int game()
         }
     }
 
-    //World world(mainWindow.getGPU(), View({1000, 1000}, {0, 0}));
+    World world(mainWindow.getGPU(), View({1000, 1000}, {0, 0}));
 
     //world.addImage(new Image({0, 0, 1000, 1000}, "/background.png"));
     //world.addPhyObj(new PhysicsObject({0, 960, 1000, 40}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
@@ -329,14 +237,43 @@ int game()
         if(KeyState::key(SDL_SCANCODE_Q) == SDL_EVENT_KEY_DOWN)
             GameState::closeGame();
 
+		SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+                case SDL_EVENT_QUIT:
+                {
+                    GameState::closeGame();
+                    break;
+                }
+                default:
+                {
+
+                }
+            }
+        }
+		if(MouseState::scrollDelta() != 0)
+        {
+            world.getView().setZoom(std::max(std::min(world.getView().getZoom() - 0.05 * (float)MouseState::scrollDelta(), 2.0), 0.1));
+        }
+		if(MouseState::buttonDown(SDL_BUTTON_RIGHT))
+        {
+            world.getView().moveDelta(MouseState::mouseDelta());
+        }
+
         ////////////////////////////////
         SDL_GPUCommandBuffer* cmdbuf = SDL_AcquireGPUCommandBuffer(mainWindow.getGPU());
         SDL_GPUTexture* swapchainTexture;
 		if (!SDL_WaitAndAcquireGPUSwapchainTexture(cmdbuf, mainWindow.getWin(), &swapchainTexture, NULL, NULL))
 		{
-		SDL_Log("WaitAndAcquireGPUSwapchainTexture failed: %s", SDL_GetError());
-		return -1;
+			SDL_Log("WaitAndAcquireGPUSwapchainTexture failed: %s", SDL_GetError());
+			return -1;
 		}
+
+		ShaderData data {*world.getView().window(), *mainWindow.getResolution()};
+
+		SDL_PushGPUVertexUniformData(cmdbuf, 0, &data, sizeof(ShaderData));
 
 		if (swapchainTexture != NULL)
 		{
@@ -349,10 +286,8 @@ int game()
 
 			SDL_GPURenderPass* renderPass = SDL_BeginGPURenderPass(cmdbuf, &colorTargetInfo, 1, NULL);
 			SDL_BindGPUGraphicsPipeline(renderPass, Pipeline);
-			SDL_BindGPUVertexBuffers(renderPass, 0, &(SDL_GPUBufferBinding){ .buffer = vertexBuffer, .offset = 0 }, 1);
-			SDL_BindGPUIndexBuffer(renderPass, &(SDL_GPUBufferBinding){ .buffer = indexBuffer, .offset = 0 }, SDL_GPU_INDEXELEMENTSIZE_16BIT);
 			SDL_BindGPUFragmentSamplers(renderPass, 0, &(SDL_GPUTextureSamplerBinding){ .texture = Texture::get("/spritemap.png"), .sampler = sample }, 1);
-			SDL_DrawGPUIndexedPrimitives(renderPass, 6, 1, 0, 0, 0);
+			SDL_DrawGPUPrimitives(renderPass, 6, 1, 0, 0);
 
 			SDL_EndGPURenderPass(renderPass);
 		}
@@ -361,7 +296,7 @@ int game()
 
         ////////////////////////////////
 
-        SDL_Delay(1);
+        SDL_Delay(10);
         //std::cout << "FPS: " << FPS << "\tPPS:" << PPS << "\r";
     }
 
