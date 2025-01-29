@@ -110,11 +110,18 @@ SDL_GPUShader* LoadShader(
 	return shader;
 }
 
-struct ShaderData
+struct ShaderWorldData
 {
 	SDL_Rect camera;
 	SDL_Point resolution;
 };
+
+struct ShaderObjData
+{
+  SDL_Rect position;
+};
+
+ShaderObjData objData {500, 500, 500, 500};
 
 ////////////////////////////////
 
@@ -131,7 +138,7 @@ int game()
 
     ////////////////////////////////
 	// Create the shaders
-	SDL_GPUShader* vertexShader = LoadShader(mainWindow.getGPU(), "shader.vert", 0, 1, 0, 0);
+	SDL_GPUShader* vertexShader = LoadShader(mainWindow.getGPU(), "shader.vert", 0, 4, 0, 0);
 	if (vertexShader == NULL)
 	{
 		SDL_Log("Failed to create vertex shader!");
@@ -229,6 +236,8 @@ int game()
     //world.addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(mainWindow.getGPU(), &dataPackage, "/spritemap.json")));
     //world.startPhysics();
 
+	std::cout << mainWindow.getResolution()->x << ", " << mainWindow.getResolution()->y << "\r\n";
+
     while (!GameState::gameClosing())
     {
         MouseState::update();
@@ -236,6 +245,24 @@ int game()
 
         if(KeyState::key(SDL_SCANCODE_Q) == SDL_EVENT_KEY_DOWN)
             GameState::closeGame();
+
+		if(KeyState::key(SDL_SCANCODE_A) == SDL_EVENT_KEY_DOWN)
+			objData.position.x -= 5;
+		if(KeyState::key(SDL_SCANCODE_D) == SDL_EVENT_KEY_DOWN)
+			objData.position.x += 5;
+		if(KeyState::key(SDL_SCANCODE_W) == SDL_EVENT_KEY_DOWN)
+            objData.position.y -= 5;
+		if(KeyState::key(SDL_SCANCODE_S) == SDL_EVENT_KEY_DOWN)
+            objData.position.y += 5;
+
+		if(KeyState::key(SDL_SCANCODE_LEFT) == SDL_EVENT_KEY_DOWN)
+			objData.position.w -= 5;
+		if(KeyState::key(SDL_SCANCODE_RIGHT) == SDL_EVENT_KEY_DOWN)
+			objData.position.w += 5;
+		if(KeyState::key(SDL_SCANCODE_UP) == SDL_EVENT_KEY_DOWN)
+            objData.position.h += 5;
+		if(KeyState::key(SDL_SCANCODE_DOWN) == SDL_EVENT_KEY_DOWN)
+            objData.position.h -= 5;
 
 		SDL_Event event;
         while (SDL_PollEvent(&event))
@@ -262,7 +289,6 @@ int game()
             world.getView().moveDelta(MouseState::mouseDelta());
         }
 
-        ////////////////////////////////
         SDL_GPUCommandBuffer* cmdbuf = SDL_AcquireGPUCommandBuffer(mainWindow.getGPU());
         SDL_GPUTexture* swapchainTexture;
 		if (!SDL_WaitAndAcquireGPUSwapchainTexture(cmdbuf, mainWindow.getWin(), &swapchainTexture, NULL, NULL))
@@ -271,9 +297,9 @@ int game()
 			return -1;
 		}
 
-		ShaderData data {*world.getView().window(), *mainWindow.getResolution()};
-
-		SDL_PushGPUVertexUniformData(cmdbuf, 0, &data, sizeof(ShaderData));
+		std::cout << "body position: " << objData.position.x << ", " << objData.position.y << " - " << objData.position.w << ", " << objData.position.h << "\r\n";
+		ShaderWorldData worldData {*world.getView().window(), *mainWindow.getResolution()};
+		SDL_PushGPUVertexUniformData(cmdbuf, 0, &worldData, sizeof(worldData));
 
 		if (swapchainTexture != NULL)
 		{
@@ -285,16 +311,15 @@ int game()
 			colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
 
 			SDL_GPURenderPass* renderPass = SDL_BeginGPURenderPass(cmdbuf, &colorTargetInfo, 1, NULL);
+			SDL_PushGPUVertexUniformData(cmdbuf, 2, &objData, sizeof(ShaderObjData));
 			SDL_BindGPUGraphicsPipeline(renderPass, Pipeline);
-			SDL_BindGPUFragmentSamplers(renderPass, 0, &(SDL_GPUTextureSamplerBinding){ .texture = Texture::get("/spritemap.png"), .sampler = sample }, 1);
+			SDL_BindGPUFragmentSamplers(renderPass, 0, &(SDL_GPUTextureSamplerBinding){ .texture = Texture::get("/Tile.png"), .sampler = sample }, 1);
 			SDL_DrawGPUPrimitives(renderPass, 6, 1, 0, 0);
 
 			SDL_EndGPURenderPass(renderPass);
 		}
 
 	    SDL_SubmitGPUCommandBuffer(cmdbuf);
-
-        ////////////////////////////////
 
         SDL_Delay(10);
         //std::cout << "FPS: " << FPS << "\tPPS:" << PPS << "\r";

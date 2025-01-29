@@ -1,19 +1,31 @@
 //UNIFORMS
 
-cbuffer data : register(b0, space1)
+cbuffer worldData : register(b0, space1)
 {
-  int4 camera;
-  int2 resolution;
+    int cameraX;
+    int cameraY;
+    int cameraWidth;
+    int cameraHeight;
+    int resolutionWidth;
+    int resolutionHeight;
+};
+
+cbuffer objectData : register(b2, space1)
+{
+    int bodyX;
+    int bodyY;
+    int bodyWidth;
+    int bodyHeight;
 };
 
 //STATICS
 
 static float2 verticesData[4] =
 {
-    float2(0.0f, 1.0f),
+    float2(-1.0f, 1.0f),
     float2(1.0f, 1.0f),
-    float2(1.0f, 0.0f),
-    float2(0.0f, 0.0f)
+    float2(1.0f, -1.0f),
+    float2(-1.0, -1.0f)
 };
 
 static float2 texData[4] =
@@ -37,13 +49,26 @@ struct Output
 
 Output main(uint index : SV_VertexID)
 {
+    float xScale = ((float)bodyWidth / (float)cameraWidth);
+    float yScale = ((float)bodyHeight / (float)cameraHeight);
+    float4x4 Scale = float4x4(
+        float4(xScale, 0.0f, 0.0f, 0.0f),
+        float4(0.0f, yScale, 0.0f, 0.0f),
+        float4(0.0f, 0.0f, 1.0f, 0.0f),
+        float4(0.0f, 0.0f, 0.0f, 1.0f)
+    );
+
+    float positionX = (((float)(bodyX - cameraX) * 2.0f) / (float)cameraWidth) - 1.0f;
+    float positionY = (((float)(-bodyY - cameraY) * 2.0f) / (float)cameraHeight) + 1.0f;
+    float4x4 Translation = float4x4(
+        float4(1.0f, 0.0f, 0.0f, 0.0f),
+        float4(0.0f, 1.0f, 0.0f, 0.0f),
+        float4(0.0f, 0.0f, 1.0f, 0.0f),
+        float4(positionX, positionY, 1.0f, 1.0f)
+    );
+
     Output output;
     output.TexCoord = texData[indexData[index]];
-
-    float2 transVert = verticesData[indexData[index]];
-    transVert.x += ((float)camera.x / (float)camera.z);
-    transVert.y -= ((float)camera.y / (float)camera.w);
-    output.Position = float4(transVert.x, transVert.y, 0.0f, 1.0f);
+    output.Position = mul(float4(verticesData[indexData[index]], 0.0f, 1.0f), mul(Scale, Translation));
     return output;
 }
-
