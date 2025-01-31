@@ -58,8 +58,11 @@ Output main(uint index : SV_VertexID)
         float4(0.0f, 0.0f, 0.0f, 1.0f)
     );
 
-    float positionX = (((float)(bodyX - cameraX) * 2.0f) / (float)cameraWidth) - 1.0f;
-    float positionY = (((float)(-bodyY - cameraY) * 2.0f) / (float)cameraHeight) + 1.0f;
+    float left = bodyX + (bodyWidth / 2.0f);
+    float top  = bodyY + (bodyHeight / 2.0f);
+
+    float positionX = (((float)(left - cameraX) * 2.0f) / (float)cameraWidth) - 1.0f;
+    float positionY = (((float)(-top - cameraY) * 2.0f) / (float)cameraHeight) + 1.0f;
     float4x4 Translation = float4x4(
         float4(1.0f, 0.0f, 0.0f, 0.0f),
         float4(0.0f, 1.0f, 0.0f, 0.0f),
@@ -71,4 +74,5 @@ Output main(uint index : SV_VertexID)
     output.TexCoord = texData[indexData[index]];
     output.Position = mul(float4(verticesData[indexData[index]], 0.0f, 1.0f), mul(Scale, Translation));
     return output;
+
 }
