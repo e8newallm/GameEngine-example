@@ -35,7 +35,7 @@ int game()
     PackageManager dataPackage("data.bin");
 
 	// Create the default shaders
-	Shader::add(Shader::LoadShaderFromFile(mainWindow.getGPU(), "shader.vert.spv", 0, 1, 1, 0), "default.vert");
+	Shader::add(Shader::LoadShaderFromFile(mainWindow.getGPU(), "shader.vert.spv", 0, 2, 1, 0), "default.vert");
 	if (Shader::get("default.vert") == nullptr)
 	{
 		Logger::error("Failed to create default vertex shader!");
@@ -86,7 +86,7 @@ int game()
 			Logger::message("uploading " + filename);
             SDL_GPUTexture* tex = uploadTexture(mainWindow.getGPU(), surf, filename);
 
-            Texture::add(tex, filename);
+            Texture::add(new GPUTexture{tex, surf->w, surf->h}, filename);
 			Logger::message("uploaded " + filename);
             SDL_DestroySurface(surf);
         }
@@ -94,11 +94,11 @@ int game()
 
     World world(mainWindow.getGPU(), View({1000, 1000}, {0, 0}));
 
-    Image* test = new Image({0, 0, 500, 1000}, "/background.png");
+    Image* test = new Image({0, 0, 1000, 1000}, "/background.png");
     world.addImage(test);
     world.addPhyObj(new PhysicsObject({0, 950, 1000, 50}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
 
-    //world.addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(mainWindow.getGPU(), &dataPackage, "/spritemap.json")));
+    world.addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(mainWindow.getGPU(), &dataPackage, "/spritemap.json")));
     world.startPhysics();
 
     while (!GameState::gameClosing())
@@ -137,9 +137,9 @@ int game()
 		world.runPhysics();
 		mainWindow.render(world);
 
-		SDL_Delay(0);
+		SDL_Delay(1);
         //if(FPS < 160.0f)
-		std::cout << "FPS: " << FPS << "\t PPS:" << PPS << "\r\n";
+		//std::cout << "FPS: " << FPS << "\t PPS:" << PPS << "\r\n";
 	}
 
 	world.stopPhysics();
