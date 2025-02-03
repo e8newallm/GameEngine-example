@@ -38,22 +38,24 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-(mkdir bin -p && cd bin && cmake .. $FLAGS && cmake --build . -j)
 
-if [ $? -eq 0 ]; then
-  if $TEST; then
-      ./test.sh
-  fi
+if $CPPCHECK; then
+    (cppcheck --enable=all --force --suppress=missingIncludeSystem --inconclusive --suppress=missingInclude --suppress=unusedFunction --check-level=exhaustive src gameengine)
+else
+  (mkdir bin -p && cd bin && cmake .. $FLAGS && cmake --build . -j)
 
   if [ $? -eq 0 ]; then
-    if $RUN; then
-        ./run.sh
+    if $TEST; then
+        ./test.sh
     fi
 
     if [ $? -eq 0 ]; then
-    if $VALGRIND; then
-        (cd ./bin/Game && valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --suppressions=../../valgrind.supp --error-limit=no --track-origins=yes --log-file=../../valgrind.log -s --gen-suppressions=all ./Game)
+
+      if $VALGRIND; then
+          (cd ./bin/Game && valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --suppressions=../../valgrind.supp --error-limit=no --track-origins=yes --log-file=../../valgrind.log -s --gen-suppressions=all ./Game)
+      elif $RUN; then
+          ./run.sh
+      fi
     fi
-  fi
   fi
 fi

@@ -1,6 +1,6 @@
-#include <filesystem>
 #include <string>
 #include <thread>
+#include <SDL3/SDL.h>
 
 #include "logging.h"
 
@@ -25,8 +25,12 @@ void unhandledException()
 
 int main()
 {
-    //Logger::init(std::filesystem::temp_directory_path().append("gamelog.txt"));
     std::set_terminate(unhandledException);
+
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
+    {
+        printf("error initializing SDL: %s\n", SDL_GetError());
+    }
 
     std::thread mainThread(game);
 
@@ -36,5 +40,7 @@ int main()
 #endif
 
     mainThread.join();
+
+    SDL_Quit();
     return 0;
 }

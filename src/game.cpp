@@ -25,11 +25,6 @@ extern double FPS, PPS;
 
 int game()
 {
-    Logger::message("Init of SDL");
-    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS))
-    {
-        printf("error initializing SDL: %s\n", SDL_GetError());
-    }
     Window mainWindow("GAME", 1000, 1000, 0);
 
     PackageManager dataPackage("data.bin");
@@ -93,12 +88,9 @@ int game()
     }
 
     World world(mainWindow.getGPU(), View({1000, 1000}, {0, 0}));
-
-    Image* test = new Image({0, 0, 1000, 1000}, "/background.png");
-    world.addImage(test);
+    world.addImage(new Image({0, 0, 1000, 1000}, "/background.png"));
     world.addPhyObj(new PhysicsObject({0, 950, 1000, 50}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
-
-    world.addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(mainWindow.getGPU(), &dataPackage, "/spritemap.json")));
+    world.addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(&dataPackage, "/spritemap.json")));
     world.startPhysics();
 
     while (!GameState::gameClosing())
@@ -138,11 +130,9 @@ int game()
 		mainWindow.render(world);
 
 		SDL_Delay(1);
-        //if(FPS < 160.0f)
-		//std::cout << "FPS: " << FPS << "\t PPS:" << PPS << "\r\n";
+		std::cout << "FPS: " << FPS << "\t PPS:" << PPS << "\r\n";
 	}
 
 	world.stopPhysics();
-	//SDL_Quit();
     return 0;
 }
