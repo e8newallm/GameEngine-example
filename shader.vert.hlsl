@@ -87,7 +87,7 @@ Output main(uint index : SV_VertexID)
     float top  = objectData.bodyY + (objectData.bodyHeight / 2.0f);
 
     float positionX = (((float)(left - cameraX) * 2.0f) / (float)cameraWidth) - 1.0f;
-    float positionY = (((float)(-top - cameraY) * 2.0f) / (float)cameraHeight) + 1.0f;
+    float positionY = (((float)(-top + cameraY) * 2.0f) / (float)cameraHeight) + 1.0f;
     float4x4 Translation = float4x4(
         float4(1.0f, 0.0f, 0.0f, 0.0f),
         float4(0.0f, 1.0f, 0.0f, 0.0f),
@@ -95,26 +95,10 @@ Output main(uint index : SV_VertexID)
         float4(positionX, positionY, 1.0f, 1.0f)
     );
 
-    uint width, height;
-    Texture.GetDimensions(width, height);
-
-    /*if(index == 0)
-        output.TexCoord = float2(objectData.texX / width, objectData.texY / height);
-    if(index == 1)
-        output.TexCoord = float2((objectData.texX + objectData.texWidth) / width, objectData.texY / height);
-    if(index == 2)
-        output.TexCoord = float2((objectData.texX + objectData.texWidth) / width, (objectData.texY + objectData.texHeight)  / height);
-    else
-        output.TexCoord = float2(objectData.texX / width, (objectData.texY + objectData.texHeight) / height);*/
-
-    if(indexData[index] == 0)
-        output.TexCoord = float2(objectData.texX, objectData.texY);
-    else if(indexData[index] == 1)
-        output.TexCoord = float2(objectData.texWidth, objectData.texY);
-    else if(indexData[index] == 2)
-        output.TexCoord = float2(objectData.texWidth, objectData.texHeight);
-    else
-        output.TexCoord = float2(objectData.texX, objectData.texHeight);
+    if(indexData[index] == 0)       output.TexCoord = float2(objectData.texX,       objectData.texY);
+    else if(indexData[index] == 1)  output.TexCoord = float2(objectData.texWidth,   objectData.texY);
+    else if(indexData[index] == 2)  output.TexCoord = float2(objectData.texWidth,   objectData.texHeight);
+    else                            output.TexCoord = float2(objectData.texX,       objectData.texHeight);
 
     output.Position = mul(float4(verticesData[indexData[index]], 0.0f, 1.0f), mul(Scale, Translation));
     return output;

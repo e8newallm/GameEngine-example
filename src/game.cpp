@@ -87,10 +87,10 @@ int game()
         }
     }
 
-    World world(mainWindow.getGPU(), View({1000, 1000}, {0, 0}));
-    world.addImage(new Image({0, 0, 1000, 1000}, "/background.png"));
-    world.addPhyObj(new PhysicsObject({0, 950, 1000, 50}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
-    world.addPhyObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(&dataPackage, "/spritemap.json")));
+    World world(mainWindow.getGPU(), View({1000, 1000}, {500, 500}));
+    world.addObj(new Image({0, 0, 1000, 1000}, "/background.png"));
+    world.addObj(new PhysicsObject({0, 950, 1000, 50}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
+    world.addObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(&dataPackage, "/spritemap.json")));
     world.startPhysics();
 
     while (!GameState::gameClosing())
@@ -101,7 +101,7 @@ int game()
         if(KeyState::key(SDL_SCANCODE_Q) == SDL_EVENT_KEY_DOWN)
             GameState::closeGame();
 
-		SDL_Event event;
+        SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
@@ -117,20 +117,22 @@ int game()
                 }
             }
         }
-		if(MouseState::scrollDelta() != 0)
+
+        if(MouseState::scrollDelta() != 0)
         {
             world.getView().setZoom(std::max(std::min(world.getView().getZoom() - 0.05 * (float)MouseState::scrollDelta(), 2.0), 0.1));
         }
-		if(MouseState::buttonDown(SDL_BUTTON_RIGHT))
+
+        if(MouseState::buttonDown(SDL_BUTTON_RIGHT))
         {
             world.getView().moveDelta(MouseState::mouseDelta());
         }
 
-		world.runPhysics();
 		mainWindow.render(world);
+        world.runPhysics();
 
 		SDL_Delay(1);
-		std::cout << "FPS: " << FPS << "\t PPS:" << PPS << "\r\n";
+		//std::cout << "FPS: " << FPS << "\t PPS:" << PPS << "\r\n";
 	}
 
 	world.stopPhysics();
