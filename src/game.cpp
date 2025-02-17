@@ -23,6 +23,44 @@
 
 extern double FPS, PPS;
 
+void worldFunc(double deltaTime, World& world)
+{
+	(void)deltaTime;
+
+	MouseState::update();
+	KeyState::update();
+
+	if(KeyState::key(SDL_SCANCODE_Q) == SDL_EVENT_KEY_DOWN)
+		GameState::closeGame();
+
+	SDL_Event event;
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+			case SDL_EVENT_QUIT:
+			{
+				GameState::closeGame();
+				break;
+			}
+			default:
+			{
+
+			}
+		}
+	}
+
+	if(MouseState::scrollDelta() != 0)
+	{
+		world.getView().setZoom(std::max(std::min(world.getView().getZoom() - 0.05 * (float)MouseState::scrollDelta(), 2.0), 0.1));
+	}
+
+	if(MouseState::buttonDown(SDL_BUTTON_RIGHT))
+	{
+		world.getView().moveDelta(MouseState::mouseDelta());
+	}
+}
+
 int game()
 {
     Window mainWindow("GAME", 1000, 1000, 0);
@@ -88,6 +126,7 @@ int game()
     }
 
     World world(mainWindow.getGPU(), View({1000, 1000}, {500, 500}));
+	world.registerUpdate(worldFunc);
     world.addObj(new Image({0, 0, 1000, 1000}, "/background.png"));
     world.addObj(new PhysicsObject({0, 950, 1000, 50}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
     world.addObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(&dataPackage, "/spritemap.json")));
@@ -95,44 +134,11 @@ int game()
 
     while (!GameState::gameClosing())
     {
-        MouseState::update();
-        KeyState::update();
-
-        if(KeyState::key(SDL_SCANCODE_Q) == SDL_EVENT_KEY_DOWN)
-            GameState::closeGame();
-
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-                case SDL_EVENT_QUIT:
-                {
-                    GameState::closeGame();
-                    break;
-                }
-                default:
-                {
-
-                }
-            }
-        }
-
-        if(MouseState::scrollDelta() != 0)
-        {
-            world.getView().setZoom(std::max(std::min(world.getView().getZoom() - 0.05 * (float)MouseState::scrollDelta(), 2.0), 0.1));
-        }
-
-        if(MouseState::buttonDown(SDL_BUTTON_RIGHT))
-        {
-            world.getView().moveDelta(MouseState::mouseDelta());
-        }
-
 		mainWindow.render(world);
         world.runPhysics();
 
-		SDL_Delay(1);
-		//std::cout << "FPS: " << FPS << "\t PPS:" << PPS << "\r\n";
+		SDL_Delay(0);
+		std::cout << "FPS: " << FPS << "\t PPS:" << PPS << "\r\n";
 	}
 
 	world.stopPhysics();

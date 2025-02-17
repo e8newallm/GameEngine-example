@@ -40,6 +40,6 @@ void Player::update(double deltaTime, World& world)
     {
         velocity(vel.x/2.0f, vel.y);
     }
-    
+
     PhysicsObject::update(deltaTime, world);
 }
