@@ -21,7 +21,7 @@
 #include "tools/packager/packager.h"
 #include "logging.h"
 
-extern double FPS, PPS;
+extern int frameUpdates, phyUpdates;
 
 void worldFunc(double deltaTime, World& world)
 {
@@ -116,7 +116,6 @@ int game()
             std::vector<uint8_t> data = dataPackage.getFile(filename);
             SDL_IOStream* dataBuffer = SDL_IOFromMem(data.data(), data.size());
             SDL_Surface* surf = IMG_Load_IO(dataBuffer, 1);
-			Logger::message("uploading " + filename);
             SDL_GPUTexture* tex = uploadTexture(mainWindow.getGPU(), surf, filename);
 
             Texture::add(new GPUTexture{tex, surf->w, surf->h}, filename);
@@ -129,16 +128,26 @@ int game()
 	world.registerUpdate(worldFunc);
     world.addObj(new Image({0, 0, 1000, 1000}, "/background.png"));
     world.addObj(new PhysicsObject({0, 950, 1000, 50}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
+	world.addObj(new PhysicsObject({450, 650, 500, 50}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
     world.addObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(&dataPackage, "/spritemap.json")));
     world.startPhysics();
 
+	Timer stats(1.0f);
     while (!GameState::gameClosing())
     {
 		mainWindow.render(world);
         world.runPhysics();
 
+		if(stats.trigger())
+		{
+			double time = stats.getElapsed();
+			stats.update();
+			std::cout << "FPS: " << frameUpdates << " " << frameUpdates / (time/1000.0f) << " PPS: " << phyUpdates / (time/1000.0f) << "\r\n";
+			frameUpdates = 0;
+			phyUpdates = 0;
+		}
+
 		SDL_Delay(0);
-		std::cout << "FPS: " << FPS << "\t PPS:" << PPS << "\r\n";
 	}
 
 	world.stopPhysics();
