@@ -5,10 +5,10 @@
 
 Player::Player(SDL_Rect body, int flags, std::string spriteMap)
 {
-    Player(body, flags, new SpriteMap(SpriteMap::get(spriteMap)));
+    Player(body, flags, std::make_shared<SpriteMap>(SpriteMap::get(spriteMap).get()));
 };
 
-Player::Player(SDL_Rect body, int flags, SpriteMap* spriteMap) :
+Player::Player(SDL_Rect body, int flags, std::shared_ptr<SpriteMap> spriteMap) :
 PhysicsObject(body, flags, spriteMap)
 {
     getTexture()->setSprite("sprite01");
@@ -26,7 +26,7 @@ void Player::update(double deltaTime, World& world)
     {
         getTexture()->startAnimation("explosion");
     }
-    
+
     SDL_FPoint vel = getVelocity();
     if(KeyState::key(SDL_SCANCODE_A) == SDL_EVENT_KEY_DOWN)
     {

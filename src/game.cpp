@@ -3,7 +3,9 @@
 #include <SDL3_image/SDL_image.h>
 
 #include <ctime>
+#include <memory>
 
+#include "texture_base.h"
 #include "view.h"
 #include "window.h"
 #include "physicsobject.h"
@@ -21,7 +23,7 @@
 #include "tools/packager/packager.h"
 #include "logging.h"
 
-extern int frameUpdates, phyUpdates;
+using namespace GameEng;
 
 void worldFunc(double deltaTime, World& world)
 {
@@ -30,8 +32,11 @@ void worldFunc(double deltaTime, World& world)
 	MouseState::update();
 	KeyState::update();
 
-	if(KeyState::key(SDL_SCANCODE_Q) == SDL_EVENT_KEY_DOWN)
+	if(KeyState::keyPressed(SDL_SCANCODE_Q))
 		GameState::closeGame();
+
+	if(KeyState::keyPressed(SDL_SCANCODE_P))
+		GameState::togglepause();
 
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
@@ -65,18 +70,18 @@ int game()
 {
     Window mainWindow("GAME", 1000, 1000, 0);
 
-    PackageManager dataPackage("data.bin");
+    Packager::PackageManager dataPackage("data.bin");
 
 	// Create the default shaders
 	Shader::add(Shader::LoadShaderFromFile(mainWindow.getGPU(), "shader.vert.spv", 0, 2, 1, 0), "default.vert");
-	if (Shader::get("default.vert") == nullptr)
+	if (!Shader::exists("default.vert"))
 	{
 		Logger::error("Failed to create default vertex shader!");
 		return -1;
 	}
 
 	Shader::add(Shader::LoadShaderFromFile(mainWindow.getGPU(), "shader.frag.spv",  1, 0, 0, 0), "default.frag");
-	if (Shader::get("default.frag") == nullptr)
+	if (!Shader::exists("default.frag"))
 	{
 		Logger::error("Failed to create default frag shader!");
 		return -1;
@@ -95,7 +100,7 @@ int game()
 	gpuSampleInfo.max_anisotropy = 4;
 
     Sampler::add(Sampler::createSampler(mainWindow, gpuSampleInfo), "default");
-	if (Sampler::get("default") == nullptr)
+	if (!Sampler::exists("default"))
 	{
 		Logger::error("Failed to create default sampler!");
 		return -1;
@@ -103,7 +108,7 @@ int game()
 
 	// Create default pipeline
 	Pipeline::add(Pipeline::createPipeline(mainWindow, "default.vert", "default.frag"), "default");
-	if (Pipeline::get("default") == nullptr)
+	if (!Pipeline::exists("default"))
 	{
 		Logger::error("Failed to create default pipeline!");
 		return -1;
@@ -118,7 +123,7 @@ int game()
             SDL_Surface* surf = IMG_Load_IO(dataBuffer, 1);
             SDL_GPUTexture* tex = uploadTexture(mainWindow.getGPU(), surf, filename);
 
-            Texture::add(new GPUTexture{tex, surf->w, surf->h}, filename);
+            Texture::add(std::make_shared<GPUTexture>(GPUTexture{tex, surf->w, surf->h}), filename);
 			Logger::message("uploaded " + filename);
             SDL_DestroySurface(surf);
         }
@@ -127,9 +132,9 @@ int game()
     World world(mainWindow.getGPU(), View({1000, 1000}, {500, 500}));
 	world.registerUpdate(worldFunc);
     world.addObj(new Image({0, 0, 1000, 1000}, "/background.png"));
-    world.addObj(new PhysicsObject({0, 950, 1000, 50}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
-	world.addObj(new PhysicsObject({450, 650, 500, 50}, PHYOBJ_STATIC | PHYOBJ_COLLIDE, new Texture("/Tile.png")));
-    world.addObj(new Player({500, 920, 40, 40}, PHYOBJ_COLLIDE, new SpriteMap(&dataPackage, "/spritemap.json")));
+    world.addObj(new PhysicsObject({0, 950, 1000, 50}, PhyObjFlag::Static | PhyObjFlag::Collide, std::make_shared<Texture>("/Tile.png")));
+	world.addObj(new PhysicsObject({450, 650, 500, 50}, PhyObjFlag::Static | PhyObjFlag::Collide, std::make_shared<Texture>("/Tile.png")));
+    world.addObj(new Player({500, 920, 40, 40}, PhyObjFlag::Collide, std::make_shared<SpriteMap>(&dataPackage, "/spritemap.json")));
     world.startPhysics();
 
 	Timer stats(1.0f);
@@ -140,11 +145,8 @@ int game()
 
 		if(stats.trigger())
 		{
-			double time = stats.getElapsed();
+			//double time = stats.getElapsed();
 			stats.update();
-			std::cout << "FPS: " << frameUpdates << " " << frameUpdates / (time/1000.0f) << " PPS: " << phyUpdates / (time/1000.0f) << "\r\n";
-			frameUpdates = 0;
-			phyUpdates = 0;
 		}
 
 		SDL_Delay(0);

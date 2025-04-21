@@ -5,7 +5,9 @@
 #include "logging.h"
 
 extern int game();
-extern int debugConsole();
+namespace GameEng { extern int debugConsole(); }
+
+using namespace GameEng;
 
 void unhandledException()
 {
@@ -16,8 +18,7 @@ void unhandledException()
     catch (std::exception const &e)
     {
         std::string err = std::string("Unhandled exception: ") + e.what();
-        Logger::error(err);
-        std::cout << err << std::endl;
+        GameEng::Logger::error(err);
     }
 
     std::abort();
@@ -35,7 +36,7 @@ int main()
     std::thread mainThread(game);
 
 #ifdef DEBUG
-    std::thread debugThread(debugConsole);
+    std::thread debugThread(GameEng::debugConsole);
     debugThread.join();
 #endif
 
