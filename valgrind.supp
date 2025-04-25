@@ -1,5 +1,73 @@
 {
-   <SDL_init>
+   <SDL_DestroyRenderer_REAL>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:SDL_DestroyRenderer_REAL
+}
+
+{
+   <_dl_init_Memchecl>
+   Memcheck:Cond
+   ...
+   fun:_dl_init
+}
+
+{
+   <_dl_init_ReallocZero>
+   Memcheck:ReallocZero
+   ...
+   fun:_dl_init
+}
+
+{
+   <_dl_init_BadSize>
+   Memcheck:BadSize
+   ...
+   fun:_dl_init
+}
+
+{
+   <_dl_init_Value8>
+   Memcheck:Value8
+   ...
+   fun:_dl_init
+}
+
+{
+   <_dl_open_reachable>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_dl_open
+}
+
+{
+   <SDL_Quit_REAL_reachable>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:SDL_Quit_REAL
+}
+
+{
+   <SDL_InitSubSystem_REAL_indirect>
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   ...
+   fun:SDL_InitSubSystem_REAL.part.0
+}
+
+{
+   <SDL_InitSubSystem_REAL_definite>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:SDL_InitSubSystem_REAL.part.0
+}
+
+{
+   <SDL_InitSubSystem_REAL_reachable>
    Memcheck:Leak
    match-leak-kinds: reachable
    ...
@@ -7,101 +75,143 @@
 }
 
 {
-   <SDL_AudioInit_REAL>
+   <SDL_VideoInit>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:SDL_VideoInit
+}
+
+{
+   <SDL_DBus_PumpEvents_reachable>
    Memcheck:Leak
    match-leak-kinds: reachable
    ...
-   fun:SDL_AudioInit_REAL
+   fun:SDL_DBus_PumpEvents
 }
 
 {
-   <SDL_VideoInit_REAL>
+   <SDL_SystemTheme_Init_reachable>
    Memcheck:Leak
    match-leak-kinds: reachable
    ...
-   fun:SDL_VideoInit_REAL
+   fun:SDL_SystemTheme_Init
 }
 
 {
-   <dlopen_doit>
+   <X11_PumpEvents_reachable>
    Memcheck:Leak
    match-leak-kinds: reachable
    ...
-   fun:dlopen_doit
+   fun:X11_PumpEvents
 }
 
 {
-   <pa_mainloop_run>
+   <X11_SuspendScreenSaver_reachable>
    Memcheck:Leak
    match-leak-kinds: reachable
    ...
-   fun:pa_mainloop_dispatch
+   fun:X11_SuspendScreenSaver
 }
 
 {
-   <_dl_catch_exception>
-   Memcheck:Leak
-   match-leak-kinds: all
-   ...
-   fun:_dl_catch_exception
-}
-
-{
-   <_dl_catch_exception_realloc>
-   Memcheck:ReallocZero
-   ...
-   fun:_dl_catch_exception
-}
-
-{
-   <_dl_catch_exception_badsize>
-   Memcheck:BadSize
-   ...
-   fun:_dl_catch_exception
-}
-
-{
-   <libGLX_nvidia>
+   <X11_ShowWindow_reachable>
    Memcheck:Leak
    match-leak-kinds: reachable
    ...
-   obj:/usr/lib/libGLX_nvidia.so.565.77
+   fun:X11_ShowWindow
 }
 
 {
-   <libnvidia-glcore>
+   <X11_VideoInit_indirect>
    Memcheck:Leak
-   match-leak-kinds: reachable
+   match-leak-kinds: indirect
    ...
-   obj:/usr/lib/libnvidia-glcore.so.565.77
+   fun:X11_VideoInit
 }
 
 {
-   <pa_xmalloc0>
+   <X11_InitKeyboard_indirect>
    Memcheck:Leak
-   match-leak-kinds: reachable
-   ...
-   fun:pa_xmalloc0
-}
-
-{
-   <pa_xmalloc>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   ...
-   fun:pa_xmalloc
-}
-
-{
-   <X11_InitKeyboard>
-   Memcheck:Leak
-   match-leak-kinds: reachable
+   match-leak-kinds: indirect
    ...
    fun:X11_InitKeyboard
 }
 
 {
-   <dbus_connection_send_with_reply_and_block>
+   <X11_InitModes>
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   ...
+   fun:X11_InitModes
+}
+
+{
+   <X11_CreateDevice_reachable>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:X11_CreateDevice
+}
+
+{
+   <GetGlobalContentScale_indirect>
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   ...
+   fun:GetGlobalContentScale
+}
+
+{
+   <internal_bus_get_reachable>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:internal_bus_get
+}
+
+{
+   <internal_bus_get_definite>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:internal_bus_get
+}
+
+{
+   <dbus_bus_add_match_reachable>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_bus_add_match
+}
+
+{
+   <dbus_connection_add_filter>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_connection_add_filter
+}
+
+{
+   <dbus_connection_send_with_reply_and_block_reachable>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_connection_send_with_reply_and_block
+}
+
+{
+   <dbus_connection_send_with_reply_and_block_definite>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_connection_send_with_reply_and_block
+}
+
+{
+   <dbus_connection_send_with_reply_and_block_indirect>
    Memcheck:Leak
    match-leak-kinds: indirect
    ...
@@ -109,65 +219,32 @@
 }
 
 {
-   <XSetLocaleModifiers>
+   <X11_InitModes_definite>
    Memcheck:Leak
-   match-leak-kinds: reachable
+   match-leak-kinds: definite
+   fun:malloc
    ...
-   fun:XSetLocaleModifiers
+   fun:X11_InitModes
 }
 
 {
-   <dbus_bus_register>
+   <GetGlobalContentScale_definite>
    Memcheck:Leak
    match-leak-kinds: definite
    ...
-   fun:dbus_bus_register
+   fun:GetGlobalContentScale
 }
 
 {
-   <dbus_connection_send_with_reply_and_block>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   ...
-   fun:dbus_connection_send_with_reply_and_block
-}
-
-{
-   <SDL_DBus_CallVoidMethod>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   ...
-   fun:SDL_DBus_CallVoidMethod
-}
-
-{
-   <SDL_DBus_CallMethod>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   ...
-   fun:SDL_DBus_CallMethod
-}
-
-{
-   <_dbus_connection_open_internal>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   ...
-   fun:_dbus_connection_open_internal
-}
-
-{
-   <SDL_DestroyRenderer_REAL>
+   <malloc_indirect>
    Memcheck:Leak
    match-leak-kinds: indirect
-   ...
-   fun:SDL_DestroyRenderer_REAL
+   fun:malloc
 }
 
 {
-   <SDL_DestroyRenderer_REAL>
+   <calloc_indirect>
    Memcheck:Leak
-   match-leak-kinds: definite
-   ...
-   fun:SDL_DestroyRenderer_REAL
+   match-leak-kinds: indirect
+   fun:calloc
 }

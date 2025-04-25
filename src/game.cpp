@@ -4,6 +4,7 @@
 
 #include <ctime>
 #include <memory>
+#include <vector>
 
 #include "texture_base.h"
 #include "view.h"
@@ -68,19 +69,23 @@ void worldFunc(double deltaTime, World& world)
 
 int game()
 {
-    Window mainWindow("GAME", 1000, 1000, 0);
+    Window mainWindow("GAME", 1000, 1000, 0, GPUDevice::getGPU());
 
     Packager::PackageManager dataPackage("data.bin");
 
 	// Create the default shaders
-	Shader::add(Shader::LoadShaderFromFile(mainWindow.getGPU(), "shader.vert.spv", 0, 2, 1, 0), "default.vert");
+	std::vector<uint8_t> data = dataPackage.getFile("/shader.vert.hlsl");
+	std::vector<uint8_t> buildShader = Shader::buildShader("shader.vert.hlsl", data);
+	Shader::add(Shader::LoadShaderFromArray(mainWindow.getGPU(), "shader.vert.spv", buildShader, 0, 2, 1, 0), "default.vert");
 	if (!Shader::exists("default.vert"))
 	{
 		Logger::error("Failed to create default vertex shader!");
 		return -1;
 	}
 
-	Shader::add(Shader::LoadShaderFromFile(mainWindow.getGPU(), "shader.frag.spv",  1, 0, 0, 0), "default.frag");
+	data = dataPackage.getFile("/shader.frag.hlsl");
+	buildShader = Shader::buildShader("shader.frag.hlsl", data);
+	Shader::add(Shader::LoadShaderFromArray(mainWindow.getGPU(), "shader.frag.spv", buildShader, 1, 0, 0, 0), "default.frag");
 	if (!Shader::exists("default.frag"))
 	{
 		Logger::error("Failed to create default frag shader!");
@@ -121,9 +126,8 @@ int game()
             std::vector<uint8_t> data = dataPackage.getFile(filename);
             SDL_IOStream* dataBuffer = SDL_IOFromMem(data.data(), data.size());
             SDL_Surface* surf = IMG_Load_IO(dataBuffer, 1);
-            SDL_GPUTexture* tex = uploadTexture(mainWindow.getGPU(), surf, filename);
+            Texture::add(createTexture(mainWindow.getGPU(), surf, filename), filename);
 
-            Texture::add(std::make_shared<GPUTexture>(GPUTexture{tex, surf->w, surf->h}), filename);
 			Logger::message("uploaded " + filename);
             SDL_DestroySurface(surf);
         }
@@ -143,11 +147,12 @@ int game()
 		mainWindow.render(world);
         world.runPhysics();
 
-		if(stats.trigger())
+		/*if(stats.trigger())
 		{
-			//double time = stats.getElapsed();
+			double time = stats.getElapsed();
+			std::cout <<
 			stats.update();
-		}
+		}*/
 
 		SDL_Delay(0);
 	}

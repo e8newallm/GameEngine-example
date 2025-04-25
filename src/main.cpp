@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 
 #include "logging.h"
+#include "graphics.h"
 
 extern int game();
 namespace GameEng { extern int debugConsole(); }
@@ -32,6 +33,7 @@ int main()
     {
         printf("error initializing SDL: %s\n", SDL_GetError());
     }
+    GPUDevice::GPUDeviceInit();
 
     std::thread mainThread(game);
 
@@ -42,6 +44,7 @@ int main()
 
     mainThread.join();
 
+    GPUDevice::GPUDeviceDeinit();
     SDL_Quit();
     return 0;
 }

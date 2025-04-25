@@ -1,6 +1,7 @@
 #!/bin/bash
 
-FLAGS="-DDEBUG=OFF -DCMAKE_BUILD_TYPE=Release"
+DEBUGFLAGS="-DDEBUG=OFF -DCMAKE_BUILD_TYPE=Release"
+FLAGS=""
 RUN=false
 TEST=false
 VALGRIND=false
@@ -8,7 +9,11 @@ CPPCHECK=false
 while [[ $# -gt 0 ]]; do
   case $1 in
     -d|--debug)
-      FLAGS="-DDEBUG=ON -DCMAKE_BUILD_TYPE=Debug"
+      DEBUGFLAGS="-DDEBUG=ON -DCMAKE_BUILD_TYPE=Debug"
+      shift # past argument
+      ;;
+    -g|--gprof)
+      FLAGS="${FLAGS}-DCMAKE_CXX_FLAGS=-pg -DCMAKE_EXE_LINKER_FLAGS=-pg -DCMAKE_SHARED_LINKER_FLAGS=-pg"
       shift # past argument
       ;;
     -r|--run)
@@ -38,6 +43,9 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+FLAGS="${FLAGS} ${DEBUGFLAGS}"
+
+echo "Building with ${FLAGS}"
 
 if $CPPCHECK; then
     (cppcheck --enable=all --force --suppress=missingIncludeSystem --inconclusive --suppress=missingInclude --suppress=unusedFunction --check-level=exhaustive src gameengine)

@@ -102,5 +102,4 @@ Output main(uint index : SV_VertexID)
 
     output.Position = mul(float4(verticesData[indexData[index]], 0.0f, 1.0f), mul(Scale, Translation));
     return output;
-
 }

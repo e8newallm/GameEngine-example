@@ -2,6 +2,8 @@
 bin
 .vscode
 .cache
-valgrind.log
+valgrind.*
 callgrind.*
 vgcore.*
+gprof.out
+tmp
