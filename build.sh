@@ -48,7 +48,7 @@ FLAGS="${FLAGS} ${DEBUGFLAGS}"
 echo "Building with ${FLAGS}"
 
 if $CPPCHECK; then
-    (cppcheck --enable=all --force --suppress=missingIncludeSystem --inconclusive --suppress=missingInclude --suppress=unusedFunction --check-level=exhaustive src gameengine)
+    (cppcheck --enable=all --force --suppress=missingIncludeSystem --inconclusive --suppress=missingInclude --suppress=unusedFunction --check-level=exhaustive src gameengine -i gameengine/extern)
 else
   (mkdir bin -p && cd bin && cmake .. $FLAGS && cmake --build . -j)
 

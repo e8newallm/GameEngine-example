@@ -123,7 +123,7 @@ int game()
     {
         if(getExtension(filename) == "png")
         {
-            std::vector<uint8_t> data = dataPackage.getFile(filename);
+            data = dataPackage.getFile(filename);
             SDL_IOStream* dataBuffer = SDL_IOFromMem(data.data(), data.size());
             SDL_Surface* surf = IMG_Load_IO(dataBuffer, 1);
             Texture::add(createTexture(mainWindow.getGPU(), surf, filename), filename);
@@ -150,7 +150,6 @@ int game()
 		/*if(stats.trigger())
 		{
 			double time = stats.getElapsed();
-			std::cout <<
 			stats.update();
 		}*/
 
