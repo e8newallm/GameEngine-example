@@ -2,11 +2,9 @@
 #include <SDL3/SDL_gpu.h>
 #include <SDL3_image/SDL_image.h>
 
-#include <ctime>
 #include <memory>
 #include <vector>
 
-#include "texture_base.h"
 #include "view.h"
 #include "window.h"
 #include "physicsobject.h"
@@ -26,6 +24,7 @@
 
 using namespace GameEng;
 
+//Simple world update function for keyboard/mouse updates
 void worldFunc(double deltaTime, World& world)
 {
 	(void)deltaTime;
@@ -142,16 +141,24 @@ int game()
     world.startPhysics();
 
 	Timer stats(1.0f);
+	int frames = 0;
     while (!GameState::gameClosing())
     {
-		mainWindow.render(world);
+		
+		if(mainWindow.render(world)) 
+		{
+			frames++;
+		}
+		
         world.runPhysics();
 
-		/*if(stats.trigger())
+		if(stats.trigger())
 		{
 			double time = stats.getElapsed();
+			std::cout << frames / time * 1000.0f << "\r\n";
+			frames = 0;
 			stats.update();
-		}*/
+		}
 
 		SDL_Delay(0);
 	}
