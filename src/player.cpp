@@ -8,8 +8,7 @@ Player::Player(SDL_Rect body, int flags, std::string spriteMap)
     Player(body, flags, std::make_shared<SpriteMap>(SpriteMap::get(spriteMap).get()));
 };
 
-Player::Player(SDL_Rect body, int flags, std::shared_ptr<SpriteMap> spriteMap) :
-PhysicsObject(body, flags, spriteMap)
+Player::Player(SDL_Rect body, int flags, std::shared_ptr<SpriteMap> spriteMap) : PhysicsObject(body, flags, spriteMap)
 {
     getTexture()->setSprite("sprite01");
 };
@@ -38,7 +37,7 @@ void Player::update(double deltaTime, World& world)
     }
     else
     {
-        velocity(vel.x/2.0f, vel.y);
+        velocity(vel.x / 2.0f, vel.y);
     }
 
     PhysicsObject::update(deltaTime, world);
